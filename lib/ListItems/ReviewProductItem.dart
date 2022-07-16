@@ -1,11 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:megamall/Models/Review.dart';
 import 'package:megamall/Repository/DBHelper.dart';
-import 'package:megamall/Screens/CartItem.dart';
 
-class ProductItem extends StatelessWidget {
+
+class ReviewProductItem extends StatefulWidget {
   QueryDocumentSnapshot snap;
-  ProductItem({required this.snap, Key? key}) : super(key: key);
+  QueryDocumentSnapshot completed;
+  ReviewProductItem({required this.completed,required this.snap, Key? key}) : super(key: key);
+
+  @override
+  State<ReviewProductItem> createState() => _ReviewProductItemState();
+}
+
+class _ReviewProductItemState extends State<ReviewProductItem> {
+  var myrating=0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -23,24 +33,24 @@ class ProductItem extends StatelessWidget {
               ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.network(
-                    snap.get("imglink"),
+                    widget.snap.get("imglink"),
                     height: 125,
                     width: 125,
                     fit: BoxFit.fill,
                   )),
               InkWell(
                 onTap: () async {
-                  await DBHelper.FavouriteThis(snap.get("key"));
+                  await DBHelper.FavouriteThis(widget.snap.get("key"));
                 },
                 child: StreamBuilder(
                   stream: DBHelper.db
                       .collection("Favourite")
                       .where("userkey", isEqualTo: DBHelper.auth.currentUser!.uid)
-                      .where("productkey", isEqualTo: snap.get("key"))
+                      .where("productkey", isEqualTo: widget.snap.get("key"))
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                          snapshot) {
+                      snapshot) {
                     if (snapshot.hasData) {
                       if (snapshot.data!.docs.length > 0) {
                         return Padding(
@@ -80,14 +90,14 @@ class ProductItem extends StatelessWidget {
               children: [
                 Align(
                     alignment: Alignment.topLeft,
-                    child: Text(snap.get("Name"),
+                    child: Text(widget.snap.get("Name"),
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold))),
                 SizedBox(
                   height: 5,
                 ),
                 Text(
-                  snap.get("description"),
+                  widget.snap.get("description"),
                   style: TextStyle(fontSize: 12, color: Colors.black54),
                   softWrap: true,
                   maxLines: 3,
@@ -99,12 +109,40 @@ class ProductItem extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(r"$" + snap.get("Price").toString() + ".00"),
-                    ElevatedButton(
+                    Text(r"$" + widget.snap.get("Price").toString() + ".00"),
+                    widget.completed.get("reviewed")?SizedBox():ElevatedButton(
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (c)=>CartItem(product: snap)));
+                        showDialog(context: context, builder: (c){
+                          return AlertDialog(title: Text("Review",style: TextStyle(fontWeight: FontWeight.bold),),content: RatingBar.builder(
+                            initialRating: 3,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemPadding: EdgeInsets.symmetric(horizontal: 2.0),
+                            itemBuilder: (context, _) => Icon(
+                              Icons.star,
+                              color: Colors.amber,
+                            ),
+                            onRatingUpdate: (rating) {
+                              myrating=rating;
+                            },
+                          ),actions:[
+                            ElevatedButton(onPressed: () async {
+                              await widget.completed.reference.update({
+                                "reviewed":true
+                              });
+                              await DBHelper.db.collection("Review").add(Review(userkey: widget.completed.get("userkey"), productkey:widget.completed.get("productkey") , Rating: myrating).toMap());
+                              myrating=1;
+                              Navigator.pop(context);
+                            }, child: Text("Rate it !")),
+                            ElevatedButton(onPressed: (){
+                              Navigator.pop(context);
+                            }, child: Text("Cancel")),
+                          ],);
+                        });
                       },
-                      child: Text("Buy"),
+                      child: Text("Review"),
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all(RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20))),

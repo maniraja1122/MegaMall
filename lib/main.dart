@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:megamall/Routes.dart';
+import 'package:megamall/Screens/CompletedOrder.dart';
 import 'package:megamall/Screens/Home.dart';
 import 'package:megamall/Screens/RegisterProcess/Login.dart';
 import 'package:megamall/Screens/RegisterProcess/Selector.dart';
@@ -37,7 +38,8 @@ class MainApp extends StatelessWidget {
         Routes.Selector:(c)=>Selector(),
         Routes.Signup:(c)=>Signup(),
         Routes.Login:(c)=>Login(),
-        Routes.Home:(c)=>HomePage()
+        Routes.Home:(c)=>HomePage(),
+        Routes.CompletedOrder:(c)=>CompletedOrder()
       },
     );
   }

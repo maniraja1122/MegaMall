@@ -41,6 +41,8 @@ dependencies:
   google_fonts: ^3.0.1
   modal_progress_hud_nsn: ^0.2.1
   http: ^0.13.4
+  flutter_rating_bar: ^4.0.1
+
 
 dev_dependencies:
   flutter_test:
