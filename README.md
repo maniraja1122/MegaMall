@@ -1,16 +1,15 @@
-# megamall
+# MegaMall
+An E-commerce app made with Flutter
+ <br>
+### Features : <br>
+Login/Signup<br>
+Homepage with product displayed based on search,filters like (Ascending/Descending/No Sort+Setting max price rate) and type selection<br>
+Product detail page showing ratings and other details<br>
+Cart for managing selected products and realtime updates<br>
+Favourite section for selected favourite products<br>
+Giving rating to products that you have recieved<br>
+### Note all the pages are dynamic and are updated in real time 
+<br>
+### Video Preview
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[![MegaMall](https://img.youtube.com/vi/NHT5RPHB0A8/0.jpg)](https://www.youtube.com/watch?v=NHT5RPHB0A8)
